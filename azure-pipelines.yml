@@ -37,3 +37,20 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+- stage: Deploy
+  jobs:
+  - deployment: DeployWeb
+    displayName: Deploy Web App
+    environment: 'Production Slot'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebAppContainer@1
+            inputs:
+              azureSubscription: 'adhocke internal subscription(7effabcc-eb49-42ab-bf6e-f8351cb0f708)'
+              appName: 'ahock-bluegreen'
+              deployToSlotOrASE: true
+              resourceGroupName: 'AppSvcDevopsDeploy'
+              slotName: 'stage'
+              containers: '$(containerRegistry)/$(imageRepository):$(tag)'
