@@ -3,7 +3,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-- main
+- dev
 
 resources:
 - repo: self
@@ -41,7 +41,7 @@ stages:
   jobs:
   - deployment: DeployWeb
     displayName: Deploy Web App
-    environment: 'Production Slot'
+    environment: 'Dev Slot'
     strategy:
       runOnce:
         deploy:
@@ -52,5 +52,5 @@ stages:
               appName: 'ahock-bluegreen'
               deployToSlotOrASE: true
               resourceGroupName: 'AppSvcDevopsDeploy'
-              slotName: 'stage'
+              slotName: 'dev'
               containers: '$(containerRegistry)/$(imageRepository):$(tag)'
