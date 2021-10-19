@@ -55,6 +55,7 @@ stages:
               deployToSlotOrASE: true
               resourceGroupName: 'AppSvcDevopsDeploy'
               slotName: 'stage'
+              appSettings: -BuildVersion $(tag)
               containers: '$(containerRegistry)/$(imageRepository):$(tag)'
 - stage: SwapStageToProd
   dependsOn: DeployStage
