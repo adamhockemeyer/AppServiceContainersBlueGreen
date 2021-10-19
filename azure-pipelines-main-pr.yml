@@ -21,7 +21,7 @@ variables:
 
 stages:
 - stage: Build
-  condition: and(eq(variables['Build.SourceBranchName'], 'dev'), eq(variables['Build.Reason'], 'PullRequest'))
+  condition: eq(variables['Build.Reason'], 'PullRequest')
   displayName: Build and push stage
   jobs:
   - job: Build
@@ -38,12 +38,11 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
-- stage: Deploy
-  condition: and(eq(variables['Build.SourceBranchName'], 'dev'), eq(variables['Build.Reason'], 'PullRequest'))
+- stage: DeployStage
   dependsOn: Build
   jobs:
-  - deployment: DeployWeb
-    displayName: Deploy Web App
+  - deployment: DeployWebStage
+    displayName: Deploy Web App Stage Slot
     environment: 'Stage Slot'
     strategy:
       runOnce:
@@ -57,3 +56,20 @@ stages:
               resourceGroupName: 'AppSvcDevopsDeploy'
               slotName: 'stage'
               containers: '$(containerRegistry)/$(imageRepository):$(tag)'
+- stage: SwapStageToProd
+  dependsOn: DeployStage
+  jobs:
+  - deployment: SwapWebStage
+    displayName: SwapStageToProd
+    environment: 'Production Slot'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+              - task: AzureAppServiceManage@0
+                inputs:
+                  azureSubscription: 'adhocke internal subscription(7effabcc-eb49-42ab-bf6e-f8351cb0f708)'
+                  Action: 'Swap Slots'
+                  WebAppName: 'ahock-bluegreen'
+                  ResourceGroupName: 'AppSvcDevopsDeploy'
+                  SourceSlot: 'stage'
