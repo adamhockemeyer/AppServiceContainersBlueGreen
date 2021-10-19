@@ -21,7 +21,7 @@ variables:
 
 stages:
 - stage: Build
-  condition: and(failed(), eq(variables['Build.Reason'], 'PullRequest'))
+  condition: and(variables['Build.SourceBranchName'], 'dev', eq(variables['Build.Reason'], 'PullRequest'))
   displayName: Build and push stage
   jobs:
   - job: Build
@@ -39,7 +39,7 @@ stages:
         tags: |
           $(tag)
 - stage: Deploy
-  condition: and(failed(), eq(variables['Build.Reason'], 'PullRequest'))
+  condition: and(variables['Build.SourceBranchName'], 'dev', eq(variables['Build.Reason'], 'PullRequest'))
   jobs:
   - deployment: DeployWeb
     displayName: Deploy Web App
