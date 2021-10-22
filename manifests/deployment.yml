@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "aksemqxdemoahock-4f65"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "aksemqxdemoahock-4f65"
+  template:
+    metadata:
+      labels:
+        app: "aksemqxdemoahock-4f65"
+    spec:
+      containers:
+        - name: "aksemqxdemoahock-4f65"
+          image: "devopstestingahock.azurecr.io/aksemqxdemoahock"
+          ports:
+          - containerPort: 5000
