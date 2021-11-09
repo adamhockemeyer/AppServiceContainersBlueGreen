@@ -38,6 +38,7 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+          latest
 - stage: Deploy
   dependsOn: Build
   jobs:
@@ -56,4 +57,4 @@ stages:
               resourceGroupName: 'AppSvcDevopsDeploy'
               slotName: 'dev'
               appSettings: -BuildVersion $(tag)
-              containers: '$(containerRegistry)/$(imageRepository):$(tag)'
+              containers: '$(containerRegistry)/$(imageRepository):latest'
